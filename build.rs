@@ -1,8 +1,11 @@
+#![recursion_limit="256"]
+
 use regex::{Captures, Regex};
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use quote::quote;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -13,7 +16,7 @@ fn main() {
             {}
             {}
         ",
-        r#"
+        quote! {
             #[derive(Debug, Clone)]
             pub enum KeyMapping {
                 Usb(u16),
@@ -136,7 +139,7 @@ fn main() {
                     }
                 }
             }
-        "#,
+        },
         {
             let mut file = include_str!("keycode_converter_data.inc").to_string();
 
