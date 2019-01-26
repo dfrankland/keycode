@@ -1,11 +1,11 @@
-#![recursion_limit="256"]
+#![recursion_limit = "256"]
 
+use quote::quote;
 use regex::{Captures, Regex};
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use quote::quote;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -144,16 +144,51 @@ fn main() {
             let mut file = include_str!("keycode_converter_data.inc").to_string();
 
             // Make variable into macro
-            file = Regex::new("(USB_KEYMAP_DECLARATION)").unwrap().replace_all(&file, "$1!").to_string();
+            file = Regex::new("(USB_KEYMAP_DECLARATION)")
+                .unwrap()
+                .replace_all(&file, "$1!")
+                .to_string();
 
             // Macros don't have semicolons
-            file = Regex::new("(\\});").unwrap().replace_all(&file, "$1").to_string();
+            file = Regex::new(r"(\});")
+                .unwrap()
+                .replace_all(&file, "$1")
+                .to_string();
 
             // Ignore HID usage page + fix for linting
-            file = Regex::new("(USB_KEYMAP\\(0x)..(....)").unwrap().replace_all(&file, "$1$2").to_string();
+            file = Regex::new(r"(USB_KEYMAP\(0x)..(....)")
+                .unwrap()
+                .replace_all(&file, "$1$2")
+                .to_string();
 
-            // Make codes idents
-            file = Regex::new("\"").unwrap().replace_all(&file, "").to_string();
+            // Make codes idents, but don't replace the quotes in comments
+            let comment_prefix = r"//";
+            let quote_char = "\"";
+            let quote_placeholder = r"#####";
+            let comment_quote_regex =
+                Regex::new(format!("{}(?P<a>.*?){}", comment_prefix, quote_char).as_str()).unwrap();
+            let comment_quote_placeholder_regex =
+                Regex::new(format!("{}(?P<a>.*?){}", comment_prefix, quote_placeholder).as_str())
+                    .unwrap();
+            let all_quotes_regex = Regex::new(quote_char).unwrap();
+
+            while comment_quote_regex.is_match(&file) {
+                file = comment_quote_regex
+                    .replace_all(
+                        &file,
+                        format!("{}$a{}", comment_prefix, quote_placeholder).as_str(),
+                    )
+                    .to_string();
+            }
+            file = all_quotes_regex.replace_all(&file, "").to_string();
+            while comment_quote_placeholder_regex.is_match(&file) {
+                file = comment_quote_placeholder_regex
+                    .replace_all(
+                        &file,
+                        format!("{}$a{}", comment_prefix, quote_char).as_str(),
+                    )
+                    .to_string();
+            }
 
             // Make NULL into a unique ident
             let mut counter = 0;
