@@ -1,7 +1,7 @@
 #![feature(try_from)]
 
 use bitflags::bitflags;
-use std::convert::TryFrom;
+use std::{collections::VecDeque, convert::TryFrom};
 
 // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
 // Page 56
@@ -20,3 +20,71 @@ bitflags! {
 }
 
 include!(concat!(env!("OUT_DIR"), "/lib.rs"));
+
+pub enum KeyState {
+    Pressed,
+    Released,
+}
+
+pub struct KeyboardState {
+    key_rollover: f32,
+    key_state: VecDeque<KeyMap>,
+    modifier_state: KeyModifiers,
+}
+
+impl KeyboardState {
+    pub fn new(key_rollover: f32) -> KeyboardState {
+        KeyboardState {
+            key_rollover: key_rollover,
+            key_state: VecDeque::new(),
+            modifier_state: KeyModifiers::empty(),
+        }
+    }
+
+    pub fn update_key(self: &mut Self, key: KeyMap, state: KeyState) {
+        match state {
+            KeyState::Pressed => {
+                if let Some(key_modifier) = key.modifier {
+                    self.modifier_state.insert(key_modifier);
+                    return;
+                }
+
+                if self.key_state.len() < self.key_rollover as usize
+                    && !self.key_state.contains(&key)
+                {
+                    self.key_state.push_back(key);
+                }
+            }
+            KeyState::Released => {
+                if let Some(key_modifier) = key.modifier {
+                    self.modifier_state.remove(key_modifier);
+                    return;
+                }
+
+                if self.key_state.len() > 0 {
+                    let key_state_position = self.key_state.iter().position(|k| *k == key);
+                    if let Some(index) = key_state_position {
+                        self.key_state.remove(index);
+                    }
+                }
+            }
+        };
+    }
+
+    pub fn usb_input_report(self: &Self) -> Vec<u8> {
+        let mut input_report = vec![];
+
+        input_report.push(self.modifier_state.bits());
+        input_report.push(0);
+
+        for key in self.key_state.iter() {
+            input_report.push(key.usb as u8);
+        }
+
+        for _ in 0..(self.key_rollover as usize - self.key_state.len()) {
+            input_report.push(0);
+        }
+
+        input_report
+    }
+}
