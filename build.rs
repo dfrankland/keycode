@@ -17,7 +17,7 @@ fn main() {
             {}
         ",
         quote! {
-            #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+            #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
             pub enum KeyMapping {
                 Usb(u16),
                 Evdev(u16),
@@ -28,7 +28,7 @@ fn main() {
                 Id(KeyMappingId),
             }
 
-            #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+            #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
             pub struct KeyMap {
                 pub usb: u16,
                 pub evdev: u16,
@@ -91,7 +91,7 @@ fn main() {
                         }
                     }
 
-                    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+                    #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
                     pub enum KeyMappingCode {
                         $(
                             $code,
@@ -114,7 +114,7 @@ fn main() {
                         }
                     }
 
-                    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+                    #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
                     pub enum KeyMappingId {
                         $(
                             #[allow(non_camel_case_types)]

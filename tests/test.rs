@@ -53,21 +53,21 @@ fn keyboard_state_works_for_usb_input_report() {
     let shift = KeyMap::from(KeyMappingId::SHIFT_LEFT);
 
     // Press and release the "A" key
-    keyboard_state.update_key(a.clone(), KeyState::Pressed);
+    keyboard_state.update_key(a, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
         vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
-    keyboard_state.update_key(a.clone(), KeyState::Released);
+    keyboard_state.update_key(a, KeyState::Released);
     assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
 
     // Press and release the "A" + "Shift" (left) keys
-    keyboard_state.update_key(a.clone(), KeyState::Pressed);
+    keyboard_state.update_key(a, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
         vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
-    keyboard_state.update_key(shift.clone(), KeyState::Pressed);
+    keyboard_state.update_key(shift, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
         vec![
@@ -81,23 +81,23 @@ fn keyboard_state_works_for_usb_input_report() {
             0
         ]
     );
-    keyboard_state.update_key(shift.clone(), KeyState::Released);
+    keyboard_state.update_key(shift, KeyState::Released);
     assert_eq!(
         keyboard_state.usb_input_report(),
         vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
-    keyboard_state.update_key(a.clone(), KeyState::Released);
+    keyboard_state.update_key(a, KeyState::Released);
     assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
 
     // Can't exceed key rollover
-    keyboard_state.update_key(a.clone(), KeyState::Pressed);
-    keyboard_state.update_key(b.clone(), KeyState::Pressed);
-    keyboard_state.update_key(c.clone(), KeyState::Pressed);
-    keyboard_state.update_key(d.clone(), KeyState::Pressed);
-    keyboard_state.update_key(e.clone(), KeyState::Pressed);
-    keyboard_state.update_key(f.clone(), KeyState::Pressed);
-    keyboard_state.update_key(g.clone(), KeyState::Pressed);
-    keyboard_state.update_key(shift.clone(), KeyState::Pressed);
+    keyboard_state.update_key(a, KeyState::Pressed);
+    keyboard_state.update_key(b, KeyState::Pressed);
+    keyboard_state.update_key(c, KeyState::Pressed);
+    keyboard_state.update_key(d, KeyState::Pressed);
+    keyboard_state.update_key(e, KeyState::Pressed);
+    keyboard_state.update_key(f, KeyState::Pressed);
+    keyboard_state.update_key(g, KeyState::Pressed);
+    keyboard_state.update_key(shift, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
         vec![

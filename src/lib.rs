@@ -21,11 +21,13 @@ bitflags! {
 
 include!(concat!(env!("OUT_DIR"), "/lib.rs"));
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
 pub enum KeyState {
     Pressed,
     Released,
 }
 
+#[derive(Debug, Clone)]
 pub struct KeyboardState {
     key_rollover: f32,
     key_state: VecDeque<KeyMap>,
@@ -35,7 +37,7 @@ pub struct KeyboardState {
 impl KeyboardState {
     pub fn new(key_rollover: f32) -> KeyboardState {
         KeyboardState {
-            key_rollover: key_rollover,
+            key_rollover,
             key_state: VecDeque::new(),
             modifier_state: KeyModifiers::empty(),
         }
@@ -61,7 +63,7 @@ impl KeyboardState {
                     return;
                 }
 
-                if self.key_state.len() > 0 {
+                if !self.key_state.is_empty() {
                     let key_state_position = self.key_state.iter().position(|k| *k == key);
                     if let Some(index) = key_state_position {
                         self.key_state.remove(index);
