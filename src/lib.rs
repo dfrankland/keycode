@@ -27,15 +27,15 @@ pub enum KeyState {
     Released,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct KeyboardState {
-    key_rollover: f32,
+    key_rollover: Option<u16>,
     key_state: VecDeque<KeyMap>,
     modifier_state: KeyModifiers,
 }
 
 impl KeyboardState {
-    pub fn new(key_rollover: f32) -> KeyboardState {
+    pub fn new(key_rollover: Option<u16>) -> KeyboardState {
         KeyboardState {
             key_rollover,
             key_state: VecDeque::new(),
@@ -51,11 +51,17 @@ impl KeyboardState {
                     return;
                 }
 
-                if self.key_state.len() < self.key_rollover as usize
-                    && !self.key_state.contains(&key)
-                {
-                    self.key_state.push_back(key);
+                if self.key_state.contains(&key) {
+                    return;
                 }
+
+                if let Some(key_rollover) = self.key_rollover {
+                    if key_rollover as usize <= self.key_state.len() {
+                        return;
+                    }
+                }
+
+                self.key_state.push_back(key);
             }
             KeyState::Released => {
                 if let Some(key_modifier) = key.modifier {
@@ -83,8 +89,10 @@ impl KeyboardState {
             input_report.push(key.usb as u8);
         }
 
-        for _ in 0..(self.key_rollover as usize - self.key_state.len()) {
-            input_report.push(0);
+        if let Some(key_rollover) = self.key_rollover {
+            for _ in 0..(key_rollover as usize - self.key_state.len()) {
+                input_report.push(0);
+            }
         }
 
         input_report

@@ -40,7 +40,7 @@ fn modifiers_are_set_correctly() {
 
 #[test]
 fn keyboard_state_works_for_usb_input_report() {
-    let mut keyboard_state = KeyboardState::new(6.0);
+    let mut keyboard_state = KeyboardState::new(Some(6));
     assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
 
     let a = KeyMap::from(KeyMappingId::US_A);
