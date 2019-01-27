@@ -9,7 +9,7 @@ keywords = ["keyboard", "key", "usb", "hid", "ps2"]
 license = "MIT"
 name = "keycode"
 repository = "https://github.com/dfrankland/keycode"
-version = "0.1.0"
+version = "0.1.1"
 [build-dependencies]
 quote = "0.6.11"
 regex = "1.1.0"
