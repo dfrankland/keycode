@@ -1,5 +1,3 @@
-#![feature(try_from)]
-
 use bitflags::bitflags;
 use std::{collections::VecDeque, convert::TryFrom};
 
