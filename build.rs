@@ -17,31 +17,48 @@ fn main() {
             {}
         ",
         quote! {
+            /// The mapping of values between platforms for a specific key
             #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
             pub enum KeyMapping {
+                /// USB HID value for a specific key
                 Usb(u16),
+                /// Linux kernel evdev value for a specific key
                 Evdev(u16),
+                /// X11 value for a specific key
                 Xkb(u16),
+                /// Windows value for a specific key
                 Win(u16),
+                /// Mac value for a specific key
                 Mac(u16),
+                /// W3 browser event code for a specific key
                 Code(KeyMappingCode),
+                /// Id for a specific key
                 Id(KeyMappingId),
             }
 
+            /// Ergonomic access to a specific key's mapping of values
             #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
             pub struct KeyMap {
+                /// USB HID value for a specific key
                 pub usb: u16,
+                /// Linux kernel evdev value for a specific key
                 pub evdev: u16,
+                /// X11 value for a specific key
                 pub xkb: u16,
+                /// Windows value for a specific key
                 pub win: u16,
+                /// Mac value for a specific key
                 pub mac: u16,
+                /// W3 browser event code for a specific key
                 pub code: KeyMappingCode,
+                /// Id for a specific key
                 pub id: KeyMappingId,
+                /// USB HID bitmask
                 pub modifier: Option<KeyModifiers>,
             }
 
-            // If you don't want to use TryFrom, until it is stabilized
             impl KeyMap {
+                /// If you don't want to use TryFrom, until it is stabilized
                 pub fn from_key_mapping(key_mapping: KeyMapping) -> Result<KeyMap, ()> {
                     get_key_map(key_mapping)
                 }
@@ -91,9 +108,13 @@ fn main() {
                         }
                     }
 
+                    /// W3 browser event code for a specific key
+                    ///
+                    /// <https://www.w3.org/TR/uievents-code/>
                     #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
                     pub enum KeyMappingCode {
                         $(
+                            #[doc = "W3 browser event code for a specific key"]
                             $code,
                         )*
                     }
@@ -114,9 +135,11 @@ fn main() {
                         }
                     }
 
+                    /// Id for a specific key
                     #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
                     pub enum KeyMappingId {
                         $(
+                            #[doc = "Id for a specific key"]
                             #[allow(non_camel_case_types)]
                             $id,
                         )*
