@@ -41,7 +41,7 @@ fn modifiers_are_set_correctly() {
 #[test]
 fn keyboard_state_works_for_usb_input_report() {
     let mut keyboard_state = KeyboardState::new(Some(6));
-    assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
+    assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 
     let a = KeyMap::from(KeyMappingId::US_A);
     let b = KeyMap::from(KeyMappingId::US_B);
@@ -56,21 +56,21 @@ fn keyboard_state_works_for_usb_input_report() {
     keyboard_state.update_key(a, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
-        vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
+        &[0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
     keyboard_state.update_key(a, KeyState::Released);
-    assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
+    assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 
     // Press and release the "A" + "Shift" (left) keys
     keyboard_state.update_key(a, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
-        vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
+        &[0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
     keyboard_state.update_key(shift, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
-        vec![
+        &[
             KeyModifiers::SHIFT_LEFT.bits(),
             0,
             a.usb as u8,
@@ -84,10 +84,10 @@ fn keyboard_state_works_for_usb_input_report() {
     keyboard_state.update_key(shift, KeyState::Released);
     assert_eq!(
         keyboard_state.usb_input_report(),
-        vec![0, 0, a.usb as u8, 0, 0, 0, 0, 0]
+        &[0, 0, a.usb as u8, 0, 0, 0, 0, 0]
     );
     keyboard_state.update_key(a, KeyState::Released);
-    assert_eq!(keyboard_state.usb_input_report(), vec![0; 8]);
+    assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 
     // Can't exceed key rollover
     keyboard_state.update_key(a, KeyState::Pressed);
@@ -100,7 +100,7 @@ fn keyboard_state_works_for_usb_input_report() {
     keyboard_state.update_key(shift, KeyState::Pressed);
     assert_eq!(
         keyboard_state.usb_input_report(),
-        vec![
+        &[
             KeyModifiers::SHIFT_LEFT.bits(),
             0,
             a.usb as u8,

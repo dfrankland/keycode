@@ -1,5 +1,9 @@
+#![no_std]
+
+use arraydeque::ArrayDeque;
+use arrayvec::ArrayVec;
 use bitflags::bitflags;
-use std::{collections::VecDeque, convert::TryFrom};
+use core::convert::TryFrom;
 
 // https://www.usb.org/sites/default/files/documents/hid1_11.pdf
 // Page 56
@@ -25,19 +29,24 @@ pub enum KeyState {
     Released,
 }
 
+// Max keys is 232
+pub const NUM_KEYS: usize = 256;
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct KeyboardState {
-    key_rollover: Option<u16>,
-    key_state: VecDeque<KeyMap>,
+    key_rollover: Option<usize>,
+    key_state: ArrayDeque<[Option<KeyMap>; NUM_KEYS]>,
     modifier_state: KeyModifiers,
+    input_report: ArrayVec<[u8; NUM_KEYS]>,
 }
 
-impl KeyboardState {
-    pub fn new(key_rollover: Option<u16>) -> KeyboardState {
+impl<'a> KeyboardState {
+    pub fn new(key_rollover: Option<usize>) -> KeyboardState {
         KeyboardState {
             key_rollover,
-            key_state: VecDeque::new(),
+            key_state: ArrayDeque::new(),
             modifier_state: KeyModifiers::empty(),
+            input_report: ArrayVec::new(),
         }
     }
 
@@ -49,17 +58,25 @@ impl KeyboardState {
                     return;
                 }
 
-                if self.key_state.contains(&key) {
+                // Already contains key
+                if self.key_state.contains(&Some(key)) {
                     return;
                 }
 
+                // Key state can't store anymore keys
+                if self.key_state.is_full() {
+                    return;
+                }
+
+                // Key rollover limit is met
                 if let Some(key_rollover) = self.key_rollover {
-                    if key_rollover as usize <= self.key_state.len() {
+                    if self.key_state.len() >= key_rollover {
                         return;
                     }
                 }
 
-                self.key_state.push_back(key);
+                // We check if the `key_state` is full above, so this should be safe.
+                self.key_state.push_back(Some(key)).unwrap();
             }
             KeyState::Released => {
                 if let Some(key_modifier) = key.modifier {
@@ -67,32 +84,41 @@ impl KeyboardState {
                     return;
                 }
 
-                if !self.key_state.is_empty() {
-                    let key_state_position = self.key_state.iter().position(|k| *k == key);
-                    if let Some(index) = key_state_position {
-                        self.key_state.remove(index);
-                    }
+                if self.key_state.is_empty() {
+                    return;
                 }
+
+                self.key_state.retain(|k| *k != Some(key));
             }
-        };
+        }
     }
 
-    pub fn usb_input_report(self: &Self) -> Vec<u8> {
-        let mut input_report = vec![];
+    pub fn usb_input_report(self: &mut Self) -> &[u8] {
+        let mut input_report: ArrayVec<[u8; NUM_KEYS]> = ArrayVec::new();
 
+        // Key modifiers
         input_report.push(self.modifier_state.bits());
         input_report.push(0);
 
-        for key in self.key_state.iter() {
-            input_report.push(key.usb as u8);
+        // Normal keys
+        for possible_key in self.key_state.iter() {
+            if let Some(key) = possible_key {
+                input_report.push(key.usb as u8);
+            }
         }
 
-        if let Some(key_rollover) = self.key_rollover {
-            for _ in 0..(key_rollover as usize - self.key_state.len()) {
+        // Default (not pressed)
+        let min_input_report_size = self
+            .key_rollover
+            .and_then(|key_rollover_without_modifiers| Some(key_rollover_without_modifiers + 2))
+            .unwrap_or(8);
+        if input_report.len() < min_input_report_size {
+            for _ in input_report.len()..min_input_report_size {
                 input_report.push(0);
             }
         }
 
-        input_report
+        self.input_report = input_report;
+        self.input_report.as_slice()
     }
 }

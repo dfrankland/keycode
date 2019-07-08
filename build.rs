@@ -98,8 +98,8 @@ fn main() {
                         )*
                     }
 
-                    impl std::fmt::Display for KeyMappingCode {
-                        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    impl core::fmt::Display for KeyMappingCode {
+                        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                             match *self {
                                 $(
                                     KeyMappingCode::$code => write!(f, stringify!($code)),
@@ -122,8 +122,8 @@ fn main() {
                         )*
                     }
 
-                    impl std::fmt::Display for KeyMappingId {
-                        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    impl core::fmt::Display for KeyMappingId {
+                        fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
                             match *self {
                                 $(
                                     KeyMappingId::$id => write!(f, stringify!($id)),
