@@ -1,15 +1,17 @@
 [package]
+name = "keycode"
+description = "A Rust crate for translating keycodes based on Chrome's mapping of keys."
+version = "0.2.2"
+categories = ["os", "hardware-support", "embedded", "no-std"]
+keywords = ["keyboard", "key", "usb", "hid", "ps2"]
 authors = ["Dylan Frankland <github@frankland.io>"]
 build = "build.rs"
-categories = ["os", "hardware-support", "embedded", "no-std"]
-description = "A Rust crate for translating keycodes based on Chrome's mapping of keys."
 edition = "2018"
 homepage = "https://github.com/dfrankland/keycode"
-keywords = ["keyboard", "key", "usb", "hid", "ps2"]
-license = "MIT"
-name = "keycode"
 repository = "https://github.com/dfrankland/keycode"
-version = "0.2.1"
+license = "MIT"
+readme = "README.md"
+documentation = "https://docs.rs/keycode"
 
 [build-dependencies]
 quote = "0.6.11"
