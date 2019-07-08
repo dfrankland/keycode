@@ -29,7 +29,7 @@ pub enum KeyState {
     Released,
 }
 
-// Max keys is 232
+// Max keys is 235
 pub const NUM_KEYS: usize = 256;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

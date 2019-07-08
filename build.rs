@@ -143,6 +143,12 @@ fn main() {
         {
             let mut file = include_str!("keycode_converter_data.inc").to_string();
 
+            // Remove any existing macros
+            file = Regex::new("(?m)^#(if|define|include|undef|endif).*?$")
+                .unwrap()
+                .replace_all(&file, "")
+                .to_string();
+
             // Make variable into macro
             file = Regex::new("(USB_KEYMAP_DECLARATION)")
                 .unwrap()
