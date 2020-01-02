@@ -1,0 +1,20 @@
+[package]
+name = "keycode"
+description = "A Rust crate for translating keycodes based on Chrome's mapping of keys."
+version = "0.3.0"
+categories = ["os", "hardware-support", "embedded", "no-std"]
+keywords = ["keyboard", "key", "usb", "hid", "ps2"]
+authors = ["Dylan Frankland <github@frankland.io>"]
+build = "build.rs"
+edition = "2018"
+homepage = "https://github.com/dfrankland/keycode"
+repository = "https://github.com/dfrankland/keycode"
+license = "MIT"
+readme = "README.md"
+documentation = "https://docs.rs/keycode"
+
+[dependencies]
+arraydeque = { version = "0.4.5", default-features = false }
+arrayvec = { version = "0.4.10", default-features = false }
+bitflags = "1.0.4"
+keycode_macro = { version = "0.1.0", path = "../keycode_macro" }

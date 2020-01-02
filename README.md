@@ -29,7 +29,7 @@ use keycode::{KeyMap, KeyMappingId};
 
 // Check the USB HID value of the "a" key
 fn main() {
-    let a = KeyMap::from(KeyMappingId::US_A);
+    let a = KeyMap::from(KeyMappingId::UsA);
     assert_eq!(a.usb, 0x0004);
     assert_eq!(a.evdev, 0x001e);
     assert_eq!(a.xkb, 0x0026);
@@ -49,8 +49,8 @@ fn main() {
     let mut keyboard_state = KeyboardState::new(None);
 
     // Get key mappings
-    let a = KeyMap::from(KeyMappingId::US_A);
-    let shift = KeyMap::from(KeyMappingId::SHIFT_LEFT);
+    let a = KeyMap::from(KeyMappingId::UsA);
+    let shift = KeyMap::from(KeyMappingId::ShiftLeft);
 
     // USB HID report for "no keys pressed"
     assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
