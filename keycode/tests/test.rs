@@ -2,7 +2,7 @@ use keycode::{KeyMap, KeyMapping, KeyMappingId, KeyModifiers, KeyState, Keyboard
 
 #[test]
 fn can_get_a_key_map() {
-    let a = KeyMap::from(KeyMappingId::US_A);
+    let a = KeyMap::from(KeyMappingId::UsA);
     assert_eq!(a.evdev, 30);
     assert_eq!(a.usb, 4);
 
@@ -27,14 +27,14 @@ macro_rules! check_modifiers {
 #[test]
 fn modifiers_are_set_correctly() {
     check_modifiers![
-        CONTROL_LEFT,
-        SHIFT_LEFT,
-        ALT_LEFT,
-        META_LEFT,
-        CONTROL_RIGHT,
-        SHIFT_RIGHT,
-        ALT_RIGHT,
-        META_RIGHT,
+        ControlLeft,
+        ShiftLeft,
+        AltLeft,
+        MetaLeft,
+        ControlRight,
+        ShiftRight,
+        AltRight,
+        MetaRight,
     ];
 }
 
@@ -43,14 +43,14 @@ fn keyboard_state_works_for_usb_input_report() {
     let mut keyboard_state = KeyboardState::new(Some(6));
     assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 
-    let a = KeyMap::from(KeyMappingId::US_A);
-    let b = KeyMap::from(KeyMappingId::US_B);
-    let c = KeyMap::from(KeyMappingId::US_C);
-    let d = KeyMap::from(KeyMappingId::US_D);
-    let e = KeyMap::from(KeyMappingId::US_E);
-    let f = KeyMap::from(KeyMappingId::US_F);
-    let g = KeyMap::from(KeyMappingId::US_G);
-    let shift = KeyMap::from(KeyMappingId::SHIFT_LEFT);
+    let a = KeyMap::from(KeyMappingId::UsA);
+    let b = KeyMap::from(KeyMappingId::UsB);
+    let c = KeyMap::from(KeyMappingId::UsC);
+    let d = KeyMap::from(KeyMappingId::UsD);
+    let e = KeyMap::from(KeyMappingId::UsE);
+    let f = KeyMap::from(KeyMappingId::UsF);
+    let g = KeyMap::from(KeyMappingId::UsG);
+    let shift = KeyMap::from(KeyMappingId::ShiftLeft);
 
     // Press and release the "A" key
     keyboard_state.update_key(a, KeyState::Pressed);
@@ -71,7 +71,7 @@ fn keyboard_state_works_for_usb_input_report() {
     assert_eq!(
         keyboard_state.usb_input_report(),
         &[
-            KeyModifiers::SHIFT_LEFT.bits(),
+            KeyModifiers::ShiftLeft.bits(),
             0,
             a.usb as u8,
             0,
@@ -101,7 +101,7 @@ fn keyboard_state_works_for_usb_input_report() {
     assert_eq!(
         keyboard_state.usb_input_report(),
         &[
-            KeyModifiers::SHIFT_LEFT.bits(),
+            KeyModifiers::ShiftLeft.bits(),
             0,
             a.usb as u8,
             b.usb as u8,

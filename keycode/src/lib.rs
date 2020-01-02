@@ -16,7 +16,7 @@
 //!
 //! // Check the USB HID value of the "a" key
 //! fn main() {
-//!     let a = KeyMap::from(KeyMappingId::US_A);
+//!     let a = KeyMap::from(KeyMappingId::UsA);
 //!     assert_eq!(a.usb, 0x0004);
 //!     assert_eq!(a.evdev, 0x001e);
 //!     assert_eq!(a.xkb, 0x0026);
@@ -36,8 +36,8 @@
 //!     let mut keyboard_state = KeyboardState::new(None);
 //!
 //!     // Get key mappings
-//!     let a = KeyMap::from(KeyMappingId::US_A);
-//!     let shift = KeyMap::from(KeyMappingId::SHIFT_LEFT);
+//!     let a = KeyMap::from(KeyMappingId::UsA);
+//!     let shift = KeyMap::from(KeyMappingId::ShiftLeft);
 //!
 //!     // USB HID report for "no keys pressed"
 //!     assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
@@ -66,38 +66,10 @@
 
 use arraydeque::ArrayDeque;
 use arrayvec::ArrayVec;
-use bitflags::bitflags;
-use core::convert::TryFrom;
 
-bitflags! {
-    /// Bitmask for key modifiers based on the USB HID standard
-    ///
-    /// See the stardard here:
-    ///
-    /// <https://www.usb.org/sites/default/files/documents/hid1_11.pdf>
-    ///
-    /// Go to page 56, "8.3 Report Format for Array Items"
-    pub struct KeyModifiers: u8 {
-        /// Control left key bitmask
-        const CONTROL_LEFT  = 0b0000_0001;
-        /// Shift left key bitmask
-        const SHIFT_LEFT    = 0b0000_0010;
-        /// Alt left key bitmask
-        const ALT_LEFT      = 0b0000_0100;
-        /// Meta left key bitmask
-        const META_LEFT     = 0b0000_1000;
-        /// Control right key bitmask
-        const CONTROL_RIGHT = 0b0001_0000;
-        /// Shift right key bitmask
-        const SHIFT_RIGHT   = 0b0010_0000;
-        /// Alt right key bitmask
-        const ALT_RIGHT     = 0b0100_0000; // 👎
-        /// Meta right key bitmask
-        const META_RIGHT    = 0b1000_0000;
-    }
-}
+use keycode_macro::parse_keycode_converter_data;
 
-include!(concat!(env!("OUT_DIR"), "/lib.rs"));
+include!(concat!(env!("OUT_DIR"), "/keycode_converter.rs"));
 
 /// State of any key, whether it is pressed or not
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
