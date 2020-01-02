@@ -164,7 +164,7 @@ fn main() {
             }
         },
         {
-            let mut file = include_str!("keycode_converter_data.inc").to_string();
+            let mut file = include_str!("../keycode_converter_data.inc").to_string();
 
             // Remove any existing macros
             file = Regex::new("(?m)^#(if|define|include|undef|endif).*?$")
