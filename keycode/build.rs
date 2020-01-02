@@ -6,7 +6,7 @@ fn main() {
 
     let keycode_converter_data = format!(
         "parse_keycode_converter_data!{{{}}}",
-        include_str!("../keycode_converter_data.inc"),
+        include_str!("keycode_converter_data.inc"),
     );
 
     let mut file = File::create(&dest_path).unwrap();
