@@ -10,7 +10,7 @@ const USB_KEYMAP_DECLARATION_IDENT: &str = "USB_KEYMAP_DECLARATION";
 const USB_KEYMAP_DECLARATION_END_PUNC: &str = ";";
 
 pub fn parse(input: TokenStream) -> Result<HashSet<KeyMap>> {
-    let mut iter = input.clone().into_iter();
+    let mut iter = input.into_iter();
 
     // Check for ident
     if let Some(usb_keymap_declaration_ident) = iter.next() {
@@ -28,7 +28,7 @@ pub fn parse(input: TokenStream) -> Result<HashSet<KeyMap>> {
     let key_maps;
     if let Some(TokenTree::Group(usb_keymap_declaration_list)) = iter.next() {
         key_maps = parse_keycode_list(usb_keymap_declaration_list.stream())?;
-        if key_maps.len() == 0 {
+        if key_maps.is_empty() {
             return Err(anyhow!("`{}` list is empty", USB_KEYMAP_DECLARATION_IDENT));
         }
     } else {
@@ -52,5 +52,5 @@ pub fn parse(input: TokenStream) -> Result<HashSet<KeyMap>> {
         ));
     }
 
-    return Ok(key_maps);
+    Ok(key_maps)
 }

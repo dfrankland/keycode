@@ -15,14 +15,12 @@
 //! use keycode::{KeyMap, KeyMappingId};
 //!
 //! // Check the USB HID value of the "a" key
-//! fn main() {
-//!     let a = KeyMap::from(KeyMappingId::UsA);
-//!     assert_eq!(a.usb, 0x0004);
-//!     assert_eq!(a.evdev, 0x001e);
-//!     assert_eq!(a.xkb, 0x0026);
-//!     assert_eq!(a.win, 0x001e);
-//!     assert_eq!(a.mac, 0x0000);
-//! }
+//! let a = KeyMap::from(KeyMappingId::UsA);
+//! assert_eq!(a.usb, 0x0004);
+//! assert_eq!(a.evdev, 0x001e);
+//! assert_eq!(a.xkb, 0x0026);
+//! assert_eq!(a.win, 0x001e);
+//! assert_eq!(a.mac, 0x0000);
 //! ```
 //!
 //! # Example: generate a USB HID report
@@ -31,34 +29,32 @@
 //! use keycode::{KeyboardState, KeyMap, KeyMappingId, KeyState};
 //!
 //! // Press and release the "A" key
-//! fn main() {
-//!     // Generate a keyboard state with n-key rollover
-//!     let mut keyboard_state = KeyboardState::new(None);
+//! // Generate a keyboard state with n-key rollover
+//! let mut keyboard_state = KeyboardState::new(None);
 //!
-//!     // Get key mappings
-//!     let a = KeyMap::from(KeyMappingId::UsA);
-//!     let shift = KeyMap::from(KeyMappingId::ShiftLeft);
+//! // Get key mappings
+//! let a = KeyMap::from(KeyMappingId::UsA);
+//! let shift = KeyMap::from(KeyMappingId::ShiftLeft);
 //!
-//!     // USB HID report for "no keys pressed"
-//!     assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
+//! // USB HID report for "no keys pressed"
+//! assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 //!
-//!     // Press "shift" and "a" keys
-//!     keyboard_state.update_key(a, KeyState::Pressed);
-//!     keyboard_state.update_key(shift, KeyState::Pressed);
+//! // Press "shift" and "a" keys
+//! keyboard_state.update_key(a, KeyState::Pressed);
+//! keyboard_state.update_key(shift, KeyState::Pressed);
 //!
-//!     // USB HID report for "'A' is pressed"
-//!     assert_eq!(
-//!         keyboard_state.usb_input_report(),
-//!         &[shift.modifier.unwrap().bits(), 0, a.usb as u8, 0, 0, 0, 0, 0]
-//!     );
+//! // USB HID report for "'A' is pressed"
+//! assert_eq!(
+//!     keyboard_state.usb_input_report(),
+//!     &[shift.modifier.unwrap().bits(), 0, a.usb as u8, 0, 0, 0, 0, 0]
+//! );
 //!
-//!     // Release "shift" and "a" keys
-//!     keyboard_state.update_key(a, KeyState::Released);
-//!     keyboard_state.update_key(shift, KeyState::Released);
+//! // Release "shift" and "a" keys
+//! keyboard_state.update_key(a, KeyState::Released);
+//! keyboard_state.update_key(shift, KeyState::Released);
 //!
-//!     // USB HID report for "no keys pressed"
-//!     assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
-//! }
+//! // USB HID report for "no keys pressed"
+//! assert_eq!(keyboard_state.usb_input_report(), &[0; 8]);
 //! ```
 
 #![no_std]
@@ -69,7 +65,7 @@ use arrayvec::ArrayVec;
 
 use keycode_macro::parse_keycode_converter_data;
 
-include!(concat!(env!("OUT_DIR"), "/keycode_converter.rs"));
+parse_keycode_converter_data!();
 
 /// State of any key, whether it is pressed or not
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
@@ -165,7 +161,7 @@ impl<'a> KeyboardState {
         // Default (not pressed)
         let min_input_report_size = self
             .key_rollover
-            .and_then(|key_rollover_without_modifiers| Some(key_rollover_without_modifiers + 2))
+            .map(|key_rollover_without_modifiers| key_rollover_without_modifiers + 2)
             .unwrap_or(8);
         if input_report.len() < min_input_report_size {
             for _ in input_report.len()..min_input_report_size {
