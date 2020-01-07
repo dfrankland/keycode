@@ -3,6 +3,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use std::collections::HashSet;
 
+#[allow(clippy::cognitive_complexity)]
 pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
     let (usbs, evdevs, xkbs, wins, macs, codes, code_matches, ids) = key_maps.iter().fold(
         (

@@ -193,7 +193,7 @@ pub fn parse_keycode_list(input: TokenStream) -> Result<HashSet<KeyMap>> {
                     }
                 }
                 Some(TokenTree::Ident(ident)) => {
-                    if ident.to_string() != USB_KEYMAP_DOM_CODE_NULL_IDENT {
+                    if ident != USB_KEYMAP_DOM_CODE_NULL_IDENT {
                         return Err(anyhow!("`{}` contains an ident that is not equal to `{}` (alternatively provide a string)", USB_KEYMAP_DOM_CODE, USB_KEYMAP_DOM_CODE_NULL_IDENT));
                     }
                     None
