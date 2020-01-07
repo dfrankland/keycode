@@ -14,6 +14,6 @@ documentation = "https://docs.rs/keycode"
 
 [dependencies]
 arraydeque = { version = "0.4.5", default-features = false }
-arrayvec = { version = "0.4.10", default-features = false }
+arrayvec = { version = "0.5.1", default-features = false }
 bitflags = "1.0.4"
 keycode_macro = { version = "0.1.0", path = "../keycode_macro" }
