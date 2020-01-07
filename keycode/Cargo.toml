@@ -5,7 +5,6 @@ version = "0.3.0"
 categories = ["os", "hardware-support", "embedded", "no-std"]
 keywords = ["keyboard", "key", "usb", "hid", "ps2"]
 authors = ["Dylan Frankland <github@frankland.io>"]
-build = "build.rs"
 edition = "2018"
 homepage = "https://github.com/dfrankland/keycode"
 repository = "https://github.com/dfrankland/keycode"
