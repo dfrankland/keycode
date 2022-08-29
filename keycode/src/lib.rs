@@ -69,6 +69,7 @@ parse_keycode_converter_data!();
 
 /// State of any key, whether it is pressed or not
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum KeyState {
     /// Pressed key
     Pressed,
