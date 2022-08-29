@@ -60,6 +60,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
             /// <https://www.usb.org/sites/default/files/documents/hid1_11.pdf>
             ///
             /// Go to page 56, "8.3 Report Format for Array Items"
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct KeyModifiers: u8 {
                 /// Control left key bitmask
                 const ControlLeft  = 0b0000_0001;
@@ -82,6 +83,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
 
         /// The mapping of values between platforms for a specific key
         #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub enum KeyMapping {
             /// USB HID value for a specific key
             Usb(u16),
@@ -101,6 +103,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
 
         /// Ergonomic access to a specific key's mapping of values
         #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub struct KeyMap {
             /// USB HID value for a specific key
             pub usb: u16,
@@ -197,6 +200,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
         ///
         /// <https://www.w3.org/TR/uievents-code/>
         #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub enum KeyMappingCode {
             #(
                 #[doc = "W3 browser event code for a specific key"]
@@ -222,6 +226,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
 
         /// Id for a specific key
         #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         pub enum KeyMappingId {
             #(
                 #[doc = "Id for a specific key"]
