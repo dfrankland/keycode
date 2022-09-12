@@ -5,9 +5,9 @@ mod key_map;
 mod parse;
 
 use self::{generate::*, parse::*};
+use core::str::FromStr;
 use proc_macro::TokenStream;
 use quote::quote;
-use std::str::FromStr;
 
 #[proc_macro]
 pub fn parse_keycode_converter_data(_input: TokenStream) -> TokenStream {

@@ -1,4 +1,6 @@
 use crate::key_map::KeyMap;
+use core::result::Result;
+use core::str::FromStr;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use std::collections::HashSet;
@@ -214,6 +216,19 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
                     #(
                         KeyMappingCode::#codes => write!(f, stringify!(#codes)),
                     )*
+                }
+            }
+        }
+
+        impl FromStr for KeyMappingCode {
+            type Err = ();
+
+            fn from_str(code: &str) -> Result<KeyMappingCode, Self::Err> {
+                match code {
+                    #(
+                        stringify!(#codes) => Ok(KeyMappingCode::#codes),
+                    )*
+                    _ => {Err(())},
                 }
             }
         }
