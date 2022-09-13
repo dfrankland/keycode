@@ -1,8 +1,21 @@
-use keycode::{KeyMap, KeyMapping, KeyMappingId, KeyModifiers, KeyState, KeyboardState};
+use keycode::{
+    KeyMap, KeyMapping, KeyMappingCode, KeyMappingId, KeyModifiers, KeyState, KeyboardState,
+};
+use std::str::FromStr;
 
 #[test]
 fn can_get_a_key_map() {
     let a = KeyMap::from(KeyMappingId::UsA);
+    assert_eq!(a.evdev, 30);
+    assert_eq!(a.usb, 4);
+
+    let key_map = KeyMap::from_key_mapping(KeyMapping::Evdev(a.evdev)).unwrap();
+    assert_eq!(key_map.usb, a.usb)
+}
+
+#[test]
+fn can_get_a_key_map_from_code_str() {
+    let a = KeyMap::from(KeyMappingCode::from_str("KeyA").unwrap());
     assert_eq!(a.evdev, 30);
     assert_eq!(a.usb, 4);
 
