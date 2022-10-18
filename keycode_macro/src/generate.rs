@@ -5,8 +5,9 @@ use std::collections::HashSet;
 
 #[allow(clippy::cognitive_complexity)]
 pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
-    let (usbs, evdevs, xkbs, wins, macs, codes, code_matches, ids) = key_maps.iter().fold(
+    let (usbs, usb_pages, evdevs, xkbs, wins, macs, codes, code_matches, ids) = key_maps.iter().fold(
         (
+            vec![],
             vec![],
             vec![],
             vec![],
@@ -18,6 +19,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
         ),
         |(
             mut usbs,
+            mut usb_pages,
             mut evdevs,
             mut xkbs,
             mut wins,
@@ -40,11 +42,12 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
                 });
             }
             usbs.push(key_map.usb_code);
+            usb_pages.push(key_map.usb_page_code);
             evdevs.push(key_map.evdev_code);
             xkbs.push(key_map.xkb_code);
             wins.push(key_map.win_code);
             macs.push(key_map.mac_code);
-            (usbs, evdevs, xkbs, wins, macs, codes, code_matches, ids)
+            (usbs, usb_pages, evdevs, xkbs, wins, macs, codes, code_matches, ids)
         },
     );
 
@@ -128,12 +131,49 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
             pub fn from_key_mapping(key_mapping: KeyMapping) -> Result<KeyMap, ()> {
                 get_key_map(key_mapping)
             }
+
+            /// Get KeyMap from a USB keycode
+            pub fn from_usb_code(page: u16, code: u16) -> Result<KeyMap, ()> {
+                get_usb_code(page, code)
+            }
         }
 
         impl TryFrom<KeyMapping> for KeyMap {
             type Error = ();
             fn try_from(key_mapping: KeyMapping) -> Result<KeyMap, Self::Error> {
                 get_key_map(key_mapping)
+            }
+        }
+
+        fn get_usb_code(page: u16, code: u16) -> Result<KeyMap, ()> {
+            match (page, code) {
+                #(
+                    (#usb_pages, #usbs) => {
+                        let id = KeyMappingId::#ids;
+                        let keymap = KeyMap {
+                            usb: #usbs,
+                            evdev: #evdevs,
+                            xkb: #xkbs,
+                            win: #wins,
+                            mac: #macs,
+                            code: #code_matches,
+                            modifier: match id {
+                                KeyMappingId::ControlLeft => Some(KeyModifiers::ControlLeft),
+                                KeyMappingId::ShiftLeft => Some(KeyModifiers::ShiftLeft),
+                                KeyMappingId::AltLeft => Some(KeyModifiers::AltLeft),
+                                KeyMappingId::MetaLeft => Some(KeyModifiers::MetaLeft),
+                                KeyMappingId::ControlRight => Some(KeyModifiers::ControlRight),
+                                KeyMappingId::ShiftRight => Some(KeyModifiers::ShiftRight),
+                                KeyMappingId::AltRight => Some(KeyModifiers::AltRight),
+                                KeyMappingId::MetaRight => Some(KeyModifiers::MetaRight),
+                                _ => None,
+                            },
+                            id,
+                        };
+                        Ok(keymap)
+                    }
+                )*,
+                _ => Err(())
             }
         }
 
