@@ -1,7 +1,7 @@
 [package]
 name = "keycode_macro"
 description = "A Rust crate for parsing Chrome's mapping of keys. Used in the `keycode` crate."
-version = "0.4.0"
+version = "1.0.0"
 authors = ["Dylan Frankland <dfrankland@users.noreply.github.com>"]
 edition = "2018"
 homepage = "https://github.com/dfrankland/keycode"
