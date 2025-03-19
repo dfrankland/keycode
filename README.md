@@ -78,3 +78,11 @@ fn main() {
 
 Requires Rust 1.34.0 or newer due to use of
 [TryFrom](https://doc.rust-lang.org/std/convert/trait.TryFrom.html).
+
+## Developing
+
+I recommend to use Nix and the flake within this repo:
+
+```bash
+nix develop
+```
