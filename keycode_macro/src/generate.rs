@@ -1,6 +1,4 @@
 use crate::key_map::KeyMap;
-use core::result::Result;
-use core::str::FromStr;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use std::collections::HashSet;

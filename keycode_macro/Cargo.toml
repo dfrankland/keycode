@@ -21,3 +21,6 @@ anyhow = "1.0.26"
 
 [dev-dependencies]
 bitflags = "2.9.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(feature, values("serde"))'] }
