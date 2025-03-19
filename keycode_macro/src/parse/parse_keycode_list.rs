@@ -1,6 +1,6 @@
 use crate::key_map::KeyMap;
 use anyhow::{anyhow, Result};
-use heck::CamelCase;
+use heck::ToUpperCamelCase;
 use proc_macro2::{TokenStream, TokenTree};
 use std::{collections::HashSet, convert::TryFrom};
 
@@ -210,7 +210,7 @@ pub fn parse_keycode_list(input: TokenStream) -> Result<HashSet<KeyMap>> {
 
             let variant;
             if let Some(TokenTree::Ident(ident)) = usb_keymap.pop() {
-                variant = ident.to_string().to_camel_case();
+                variant = ident.to_string().to_upper_camel_case();
             } else {
                 return Err(anyhow!(
                     "`{}` does not contain an ident for `{}`",

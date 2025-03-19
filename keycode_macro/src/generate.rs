@@ -65,6 +65,7 @@ pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
             /// <https://www.usb.org/sites/default/files/documents/hid1_11.pdf>
             ///
             /// Go to page 56, "8.3 Report Format for Array Items"
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct KeyModifiers: u8 {
                 /// Control left key bitmask

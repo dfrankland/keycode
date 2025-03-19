@@ -85,9 +85,9 @@ pub const NUM_KEYS: usize = 256;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct KeyboardState {
     key_rollover: Option<usize>,
-    key_state: ArrayDeque<[Option<KeyMap>; NUM_KEYS]>,
+    key_state: ArrayDeque<Option<KeyMap>, NUM_KEYS>,
     modifier_state: KeyModifiers,
-    input_report: ArrayVec<[u8; NUM_KEYS]>,
+    input_report: ArrayVec<u8, NUM_KEYS>,
 }
 
 impl<'a> KeyboardState {
@@ -147,7 +147,7 @@ impl<'a> KeyboardState {
 
     /// Generate a USB HID report
     pub fn usb_input_report(self: &mut Self) -> &[u8] {
-        let mut input_report: ArrayVec<[u8; NUM_KEYS]> = ArrayVec::new();
+        let mut input_report: ArrayVec<u8, NUM_KEYS> = ArrayVec::new();
 
         // Key modifiers
         input_report.push(self.modifier_state.bits());
