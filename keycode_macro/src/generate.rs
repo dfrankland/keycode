@@ -5,51 +5,62 @@ use std::collections::HashSet;
 
 #[allow(clippy::cognitive_complexity)]
 pub fn generate(key_maps: HashSet<KeyMap>) -> TokenStream {
-    let (usbs, usb_pages, evdevs, xkbs, wins, macs, codes, code_matches, ids) = key_maps.iter().fold(
-        (
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-            vec![],
-        ),
-        |(
-            mut usbs,
-            mut usb_pages,
-            mut evdevs,
-            mut xkbs,
-            mut wins,
-            mut macs,
-            mut codes,
-            mut code_matches,
-            mut ids,
-        ),
-         key_map| {
-            ids.push(format_ident!("{}", key_map.variant));
-            if let Some(code) = &key_map.dom_code {
-                let code_ident = format_ident!("{}", code);
-                codes.push(code_ident.clone());
-                code_matches.push(quote! {
-                    Some(KeyMappingCode::#code_ident)
-                });
-            } else {
-                code_matches.push(quote! {
-                    None
-                });
-            }
-            usbs.push(key_map.usb_code);
-            usb_pages.push(key_map.usb_page_code);
-            evdevs.push(key_map.evdev_code);
-            xkbs.push(key_map.xkb_code);
-            wins.push(key_map.win_code);
-            macs.push(key_map.mac_code);
-            (usbs, usb_pages, evdevs, xkbs, wins, macs, codes, code_matches, ids)
-        },
-    );
+    let (usbs, usb_pages, evdevs, xkbs, wins, macs, codes, code_matches, ids) =
+        key_maps.iter().fold(
+            (
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+                vec![],
+            ),
+            |(
+                mut usbs,
+                mut usb_pages,
+                mut evdevs,
+                mut xkbs,
+                mut wins,
+                mut macs,
+                mut codes,
+                mut code_matches,
+                mut ids,
+            ),
+             key_map| {
+                ids.push(format_ident!("{}", key_map.variant));
+                if let Some(code) = &key_map.dom_code {
+                    let code_ident = format_ident!("{}", code);
+                    codes.push(code_ident.clone());
+                    code_matches.push(quote! {
+                        Some(KeyMappingCode::#code_ident)
+                    });
+                } else {
+                    code_matches.push(quote! {
+                        None
+                    });
+                }
+                usbs.push(key_map.usb_code);
+                usb_pages.push(key_map.usb_page_code);
+                evdevs.push(key_map.evdev_code);
+                xkbs.push(key_map.xkb_code);
+                wins.push(key_map.win_code);
+                macs.push(key_map.mac_code);
+                (
+                    usbs,
+                    usb_pages,
+                    evdevs,
+                    xkbs,
+                    wins,
+                    macs,
+                    codes,
+                    code_matches,
+                    ids,
+                )
+            },
+        );
 
     quote! {
         use bitflags::bitflags;
